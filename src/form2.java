@@ -13,6 +13,7 @@ public class form2 extends JFrame {
     private JTextField nombretxt;
     private JButton ingresardatos;
     private JButton Productobutton;
+    private JButton irabuscar;
 
     public form2() {
         setTitle("Insertar Cliente");
@@ -70,6 +71,14 @@ public class form2 extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 new form3();
                 setVisible(false);
+            }
+        });
+
+        irabuscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              new form4();
+              setVisible(false);
             }
         });
     }
