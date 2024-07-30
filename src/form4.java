@@ -90,26 +90,18 @@ public class form4 extends JFrame {
     }
 
     public void buscarProducto() {
-        String idProductoStr = bustxt.getText();
         String idClienteStr = buscarClienteTxt.getText();
 
-        if (idProductoStr.isEmpty() && idClienteStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese el ID del producto o el ID del cliente para buscar", "Error", JOptionPane.ERROR_MESSAGE);
+        if (idClienteStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el ID del cliente para buscar", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        int idProducto = -1;
-        int idCliente = -1;
-
+        int idCliente;
         try {
-            if (!idProductoStr.isEmpty()) {
-                idProducto = Integer.parseInt(idProductoStr);
-            }
-            if (!idClienteStr.isEmpty()) {
-                idCliente = Integer.parseInt(idClienteStr);
-            }
+            idCliente = Integer.parseInt(idClienteStr);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ID inválido", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "ID del cliente inválido", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -118,23 +110,9 @@ public class form4 extends JFrame {
         String password = "123456";
 
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            String query = "SELECT * FROM Producto p JOIN Cliente c ON p.id_cliente = c.id_cliente WHERE 1=1";
-            if (idProducto != -1) {
-                query += " AND p.id_producto = ?";
-            }
-            if (idCliente != -1) {
-                query += " AND c.id_cliente = ?";
-            }
-
+            String query = "SELECT * FROM Producto p JOIN Cliente c ON p.id_cliente = c.id_cliente WHERE c.id_cliente = ?";
             PreparedStatement pst = conn.prepareStatement(query);
-
-            int paramIndex = 1;
-            if (idProducto != -1) {
-                pst.setInt(paramIndex++, idProducto);
-            }
-            if (idCliente != -1) {
-                pst.setInt(paramIndex, idCliente);
-            }
+            pst.setInt(1, idCliente);
 
             ResultSet rs = pst.executeQuery();
 
@@ -150,7 +128,7 @@ public class form4 extends JFrame {
             }
 
             if (resultText.length() == 0) {
-                resultArea.setText("No se encontraron resultados.");
+                resultArea.setText("No se encontraron resultados para el ID del cliente: " + idCliente);
             } else {
                 resultArea.setText(resultText.toString());
             }
